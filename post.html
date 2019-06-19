@@ -1,0 +1,410 @@
+<!doctype html>
+<meta charset="utf-8">
+<!-- <meta http-equiv="refresh" content="3" > -->
+
+<head>
+<script src="https://distill.pub/template.v2.js"></script>
+<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+
+<script type="text/x-mathjax-config">
+  MathJax.Hub.Config({
+    tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
+  });
+  </script>
+  
+\(
+   \def\R{{\mathbb{R}}}
+   \def\cY{{\mathcal{Y}}}
+   \def\cX{{\mathcal{X}}}
+   \def\cD{{\mathcal{D}}}
+   \def\eps{\varepsilon}
+   \newcommand{\E}{\mathop{\mathbb{E}}}
+\)
+
+</head>
+
+<body>
+<d-front-matter>
+  <script type="text/json">{
+  "title": "The Building Blocks of Interpretability",
+  "description": "Interpretability techniques are normally studied in isolation. We explore the powerful interfaces that arise when you combine them -- and the rich structure of this combinatorial space.",
+  "authors": [
+    {
+      "author": "Preetum Nakkiran",
+      "authorURL": "https://preetum.nakkiran.org",
+      "affiliation": "Harvard, OpenAI",
+      "affiliationURL": ""
+    }
+  ]
+  }</script>
+</d-front-matter>
+
+<d-title>
+  <h1>Adversarial Examples are Just Bugs, Too</h1>
+  <p>Refining the source of adversarial examples</p>
+</d-title>
+<d-article>
+<p>
+  We demonstrate that there exist adversarial examples which are just "bugs": aberrations in the classifier
+  that are not
+  intrinsic properties of the data distribution.
+  In particular, we give a new method for constructing adversarial examples which:
+</p>
+
+  <ol>
+    <li>
+   Do not transfer between models, and
+    </li>
+    <li>
+      Do not leak features which allow for "non-robust learning", in the
+  sense of Ilyas-Santurkar-Tsipras-Engstrom-Tran-Madry
+  <d-cite key="bugs"></d-cite>.
+    </li>
+  </ol>
+
+<p>
+  We replicate the Ilyas et. al
+  experiment that "Non-robust features suffice for standard classification"
+  (Sec 3.2 of <d-cite key="bugs"></d-cite>),
+  and show that it fails for our construction of adversarial examples.
+</p>  
+  <p>
+   The message is, whether adversarial examples are features or bugs depends
+   on how you find them &mdash; standard PGD finds features, but bugs are abundant as well.
+</p>  
+
+<p>
+  We also give a simple example of a data distribution which has no "non-robust features"
+  (under any reasonable definition of feature), but for which standard training yields a highly non-robust classifier.
+This demonstrates, again, that adversarial examples can occur even if the data distribution does not intrinsically have any "vulnerable directions."
+</p>
+
+<!--    It is possible to construct examples which:
+   (A) transfer between models, and contain features of the target class
+   (at least, learning from these mislabeled examples works nontrivially).
+   But it is also possible to construct examples which
+   (B) do not transfer between models, and do not contain features of the target class (at least, learning fails catastrophically). -->
+
+<h2>Background</h2>
+<p>
+Ilyas et. al <d-cite key="bugs"></d-cite>
+argue that adversarial examples occur only
+in directions intrinsic to the data distribution.
+They postulate the following two worlds
+<d-footnote>As described to us by the original authors.</d-footnote>
+</p>
+
+<ul>
+<li><b>World 1: Adversarial examples exploit directions irrelevant for classification.
+  </b>
+In this world, adversarial examples occur because classifiers behave
+poorly off-distribution,
+when they are evaluated on inputs that are not natural images.
+Here, adversarial examples would occur in arbitrary directions,
+having nothing to do with the true data distribution.
+</li>
+
+<li>
+<b>World 2: Adversarial examples exploit useful directions for classification.</b>
+In this world, adversarial examples occur in directions that are still "on-distribution",
+and which contain features of the target class.
+For example, consider the perturbation that
+makes an image of a dog to be classified as a cat.
+In World 2, the perturbation is not purely random, but has something to do with cats.
+Moreover, we expect that this perturbation transfers to other classifiers trained to distinguish cats vs. dogs.
+</li>
+</ul>
+
+<p>
+Our main contribution is demonstrating that these worlds are not mutually exclusive -- and in fact, we are in both.
+Ilyas et al. <d-cite key="bugs"></d-cite>
+show that there exist adversarial examples in World 2, and we show there exist
+examples in World 1.
+</p>
+
+<hr>
+
+<h2>
+  Constructing Non-transferrable Targeted Adversarial Examples
+</h2>
+<p>
+<!-- Consider a classification problem with data distribution $\cD$.
+Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
+We propose a method to construct targeted adversarial examples for a given classifier
+$f: \R^n \to \cY$,
+which do not transfer to other classifiers trained for the same problem.
+</p>
+
+<p>
+Recall that for a classifier $f$, an input example $(x, y)$, and target class $y_{targ}$,
+a <em>targeted adversarial example</em> is an $x'$ such that $||x - x'||\leq \eps$ and
+$f(x') = y_{targ}$.
+</p>
+
+<p>
+The standard method of constructing adversarial examples is via PGD,
+which starts at input $x$, and iteratively takes steps $\{x_t\}$
+to minimize the loss $L(f, x_t, y_{targ})$.
+That is, we take steps in the direction 
+$$-\nabla_x L(f, x_t, y_{targ})$$
+where $L(f, x, y)$ is the loss of $f$ on input $x$, label $y$.
+</p>
+<d-footnote>
+PGD is the following:
+<ul>
+<li>
+Input: A classifier $f$, an input example $(x, y)$, and target class $y_{targ}$.
+</li>
+<li>
+Initialize: $x_0 \gets x$.
+</li>
+<li>
+  Iterative Step: Step in the direction of the gradient towards the target class
+$$x_{t+1} \gets \Pi_\eps[ x_t - \alpha\nabla_x L(f, x_t, y_{targ}) ]$$
+where $\alpha > 0$ is a step-size,
+$L(f, x, y)$ is the loss of classifier $f$ on input $x$, label $y$.
+And $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
+</li>
+</ul>
+</d-footnote>
+
+<p>
+  Note that since PGD steps in the gradient direction towards the target class,
+  we may expect these adversarial examples have <em>feature leakage</em> from the target class.
+  For example, suppose we are perturbing an image of a dog into a plane (which usually appears against a blue background).
+  It is plausible that the gradient direction tends to make the dog image more blue,
+  since the "blue" direction is correlated with the plane class.
+  In the construction below, we attempt to eliminate such leakage.
+</p>
+
+<h3>Our Construction</h3>
+<p>
+Let $\{f_i : \R^n \to \cY\}_i$ be an ensemble of classifiers
+for the same classification problem as $f$.
+For example, we can let $\{f_i\}$ be a collection of ResNet18s trained from
+different random initializations.
+</p>
+
+<p>
+  We perform iterative updates to find adversarial attacks, as in PGD.
+  However, instead of stepping directly in the gradient direction, we
+  step in the direction
+<d-footnote>
+Formally, we replace the iterative step with
+$$x_{t+1} \gets \Pi_\eps\left( x_t
+- \alpha( \nabla_x L(f, x_t, y_{targ}) + \E_i[ \nabla_x L(f_i, x_t, y)]) \right)$$
+</d-footnote>
+$$-\left( \nabla_x L(f, x_t, y_{targ}) + \E_i[ \nabla_x L(f_i, x_t, y)] \right)$$
+
+That is, instead of taking gradient steps to minimize $L(f, x, y_{targ})$,
+we minimize the "decorrelated loss"
+<d-footnote>
+  We could also consider explicitly using the ensemble to decorrelate,
+  by stepping in direction
+  $\nabla_x L(f, x, y_{targ}) - \E_i[ \nabla_x L(f_i, x, y_{targ})]$.
+  This works as well, but the given loss has better optimization properties.
+</d-footnote>
+$$L(f, x, y_{targ}) + \E_i[L(f_i, x, y)]$$
+This loss encourages finding an $x_t$ which is adversarial for $f$,
+but not for the ensemble $\{f_i\}$.
+</p>
+
+<p>
+By construction, these adversarial examples will not be adversarial for the ensemble $\{f_i\}$. But perhaps surprisingly, these examples are also not adversarial for
+<em>new</em> classifiers trained for the same problem.
+</p>
+
+<p>
+The intuition is... <span style='color:red'>TODO</span>
+Pictures of advex constructed in this way are... <span style='color:red'>TODO</span>
+</p>
+
+<h3>Experiments</h3>
+<p>
+We train a ResNet18 on CIFAR10 as our target classifier $f$.
+For our ensemble, we train 10 ResNet18s on CIFAR10, from fresh random initializations.
+We then test the probability that
+a targeted attack for $f$
+transfers to a new (freshly-trained) ResNet18, with the same targeted class.
+Our construction yields adversarial examples which do not transfer well to new models.
+</p>
+
+<p>
+For $L_{\infty}$ attacks:
+</p>
+
+<table>
+<tr>
+  <td></td>
+  <th>Attack Success</th>
+  <th>Transfer Success</th>
+</tr>
+<tr>
+  <th>PDG</th>
+  <td>99.6%</td>
+  <td>52.1%</td>
+</tr>
+<tr>
+  <th>Ours</th>
+  <td>98.6%</td>
+  <td style="color:red">0.8%</td>
+</tr>
+</table>
+
+<p>
+For $L_2$ attacks:
+</p>
+
+<table>
+<tr>
+  <td></td>
+  <th>Attack Success</th>
+  <th>Transfer Success</th>
+</tr>
+<tr>
+  <th>PDG</th>
+  <td>99.9%</td>
+  <td>82.5%</td>
+</tr>
+<tr>
+  <th>Ours</th>
+  <td>99.3%</td>
+  <td style="color:red">1.7%</td>
+</tr>
+</table>
+
+
+<hr>
+<h2>Adversarial Examples With No Features</h2>
+<p>
+Using the above, we can construct adversarial examples
+which <em>do not suffice</em> for learning.
+Here, we replicate the Ilyas et. al experiment 
+that "Non-robust features suffice for standard classification"
+(Section 3.2 of <d-cite key="bugs"></d-cite>),
+but show that it fails for our construction of adversarial examples.
+</p>
+
+<p>
+To review, the Ilyas et. al non-robust experiment was:
+<ol>
+  <li> 
+    Train a standard classifier $f$ for CIFAR.
+  </li>
+  <li>
+    From the CIFAR10 training set $S = \{(X_i, Y_i)\}$,
+    construct an alternate train set $S' = \{(X_i', Y_i + 1)\}$,
+    where $X_i'$ is an adversarial example for $f(X_i)$, towards target class $Y_i+1 (\text{mod }10)$.
+    Note that $S'$ appears to humans as "mislabeled examples".
+  </li>
+  <li>
+    Train a new classifier $f'$ on train set $S'$.
+    Observe that this classifier has non-trivial accuracy on the original CIFAR distribution.
+  </li>
+</ol>
+</p>
+
+<p>
+The conclusion of Ilyas et. al. is that Step (3) shows
+adversarial examples must have a meaningful "feature" component.
+
+However, for adversarial examples constructed using our method, Step (3) fails.
+In fact, $f'$ has good accuracy with respect to the "label-shifted" distribution
+$(X, Y+1)$, which is intuitively what we trained on.
+</p>
+
+<p>For $L_2$ attacks:</p>
+<figure>
+<table>
+<tr>
+  <td></td>
+  <th>Test Acc on CIFAR: $(X, Y)$</th>
+  <th>Test Acc on Shifted-CIFAR: $(X, Y+1)$</th>
+</tr>
+<tr>
+  <th>PDG</th>
+  <td>33.2%</td>
+  <td>27.3%</td>
+</tr>
+<tr>
+  <th>Ours</th>
+  <td style="color:red">2.8%</td>
+  <td>70.8%</td>
+</tr>
+</table>
+
+<figcaption>
+  <center>
+  Table: Test Accuracies of $f'$ 
+  </center>
+</figcaption>
+</figure>
+
+<p>For $L_{\infty}$ attacks:</p>
+
+<figure>
+<table>
+<tr>
+  <td></td>
+  <th>Test Acc on CIFAR: $(X, Y)$</th>
+  <th>Test Acc on Shifted-CIFAR: $(X, Y+1)$</th>
+</tr>
+<tr>
+  <th>PDG</th>
+  <td>23.7%</td>
+  <td>40.4%</td>
+</tr>
+<tr>
+  <th>Ours</th>
+  <td style="color:red">2.5%</td>
+  <td>75.9%</td>
+</tr>
+</table>
+
+<figcaption>
+  <center>
+  Table: Test Accuracies of $f'$ 
+  </center>
+</figcaption>
+</figure>
+
+<hr>
+<h2>Adversarial Examples from Robust Features</h2>
+
+<h2>Discussion</h2>
+
+</d-article>
+
+<d-appendix>
+<h2>Acknowledgments</h2>
+<p>
+  We thanks Ilya Sutskever, Jacob Steinhardt, and Gabriel Goh for
+  helpful discussion and motivation.
+</p>
+
+<h2>Experimental Details</h2>
+<p>
+We use cross-entropy loss,
+and images normalized to lie within $[0, 1]^{32 \times 32 \times 3}$.
+</p>
+
+<p>
+For $L_2$ attacks, we used $\eps = 2.5$,
+step-size $\alpha = 0.5$, and 10 PGD steps.
+As is standard, we use a variant of PGD
+where we normalize the size of each gradient step to be of $L_2$-norm
+$\alpha$.
+</p>
+
+<p>
+For $L_\infty$ attacks, we used $\eps= 8/ 255$ and $\alpha = 2/255$, and 10 PGD steps.
+As is standard, we take steps using the sign of the gradient.
+</p>
+
+
+</d-appendix>
+
+<d-bibliography src="refs.bib"> </d-bibliography>
+
+</body>
+
