@@ -26,8 +26,8 @@
 <body>
 <d-front-matter>
   <script type="text/json">{
-  "title": "The Building Blocks of Interpretability",
-  "description": "Interpretability techniques are normally studied in isolation. We explore the powerful interfaces that arise when you combine them -- and the rich structure of this combinatorial space.",
+  "title": "Adversarial Examples are Just Bugs, Too",
+  "description": "Refining the source of adversarial examples",
   "authors": [
     {
       "author": "Preetum Nakkiran",
@@ -369,7 +369,30 @@ $(X, Y+1)$, which is intuitively what we trained on.
 </figure>
 
 <hr>
-<h2>Adversarial Examples from Robust Features</h2>
+<h2>Adversarial Squares: Adversarial Examples from Robust Features</h2>
+<p>
+To further illustrate that adversarial examples can be "just bugs",
+we show that they arise even when the true data distribution has no "non-robust features" --
+that is, intuitively no intrinsically vulnerable directions.
+</p>
+
+<p>
+We are unaware of a satisfactory definition of "non-robust features", but we argue that for any reasonable
+<em>intrinsic</em> definition<d-footnote>A definition which depends only on properties of the data distribution, and not on the family of classifiers, or the finite-sample training set.</d-footnote>, the following classification problem has no non-robust features.
+</p>
+
+<p>
+The problem is to distinguish between CIFAR-sized images that are either all-black or all-white,
+with a small amount of input-noise and label noise.
+Formally:
+$$Y \sim \{\pm 1\} , \quad X := (\mathbb{1}^{32 \times 32 \times 3} + \eta_\eps) \cdot Y \cdot \eta$$
+where $\eta \in \{\pm 1\} \sim B(0.1)$ is the 10% label noise, and $\eta_\eps \sim [-0.1, +0.1]^n$
+is uniform $L_\infty$ input-noise.
+</p>
+
+<p>
+
+</p>
 
 <h2>Discussion</h2>
 
