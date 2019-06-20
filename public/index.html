@@ -131,7 +131,7 @@ examples in World 1.
 <!-- Consider a classification problem with data distribution $\cD$.
 Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
 We propose a method to construct targeted adversarial examples for a given classifier
-$f: \R^n \to \cY$,
+$f$,
 which do not transfer to other classifiers trained for the same problem.
 </p>
 
@@ -180,7 +180,7 @@ And $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
     <img src="./manifold.svg"/>
   </figure>
   <figcaption>
-    A visualization of adversarially perturbing a dog to a plane.
+    A visualization of the image-manifold for adversarially perturbing a dog to a plane.
     The gradient of the loss can be thought of as having an on-manifold "feature component"
     and an off-manifold "random component".
     PGD steps along both components, hence causing feature-leakage in adversarial examples.
@@ -222,7 +222,7 @@ but not for the ensemble $\{f_i\}$.
 </p>
 
 <p>
-By construction, these adversarial examples will not be adversarial for the ensemble $\{f_i\}$. But perhaps surprisingly, these examples are also not adversarial for
+These adversarial examples will not be adversarial for the ensemble $\{f_i\}$. But perhaps surprisingly, these examples are also not adversarial for
 <em>new</em> classifiers trained for the same problem.
 </p>
 
@@ -381,40 +381,82 @@ $(X, Y+1)$, which is intuitively what we trained on.
 <p>
 To further illustrate that adversarial examples can be "just bugs",
 we show that they arise even when the true data distribution has no "non-robust features" --
-that is, intuitively no intrinsically vulnerable directions.
+that is, no intrinsically vulnerable directions.
+<d-footnote>
+We are unaware of a satisfactory definition of "non-robust features", but we claim that for any reasonable
+<em>intrinsic</em> definition this problem has no non-robust features.
+Intrinsic here meaning, a definition which depends only on properties of the data distribution, and not on the family of classifiers, or the finite-sample training set.</d-footnote>
 </p>
 
 <p>
 The problem is to distinguish between CIFAR-sized images that are either all-black or all-white,
 with a small amount of random input-noise and label noise.
+</p>
+  <figure>
+    <center>
+    <img src="./twosquares.png" style="width:50%"/>
+    </center>
+  <figcaption>
+    <center>
+    A sample of images from the distribution.
+    </center>
+  </figcaption>
+  </figure>
+
+  <p>
 Formally:
 $$Y \sim \{\pm 1\} , \quad X := (\mathbb{1}^{32 \times 32 \times 3} + \eta_\eps) \cdot Y \cdot \eta$$
-where $\eta \in \{\pm 1\} \sim B(0.1)$ is the 10% label noise, and $\eta_\eps \sim [-0.1, +0.1]^n$
+where $\eta \in \{\pm 1\} \sim Bernoulli(0.1)$ is the 10% label noise, and $\eta_\eps \sim [-0.1, +0.1]^n$
 is uniform $L_\infty$ input-noise.
-</p>
+  </p>
 
 <p>
-We are unaware of a satisfactory definition of "non-robust features", but we claim that for any reasonable
-<em>intrinsic</em> definition<d-footnote>A definition which depends only on properties of the data distribution, and not on the family of classifiers, or the finite-sample training set.</d-footnote>,
-this problem has no non-robust features.
 
-Notice first that there exists a trivial robust classifier for this problem, that achieves perfect robust classification up to $\eps = 0.4$ magnitude $L_\infty$ attacks.
-However, if we sample 10000 training images from this distribution, and train a ResNet18 to 99% train accuracy,
-the resulting classifier is highly non-robust -- it has 0% robust accuracy even with $\eps=0.01$ perturbation.
+Notice that there exists a trivial robust classifier for this problem which achieves perfect robust classification, with to $\eps = 0.4$ magnitude $L_\infty$ attacks.
+However, if we sample 10000 training images from this distribution, and train
+a ResNet18 to 99.9% train accuracy
 <d-footnote>
 We optimize using Adam with learning-rate $0.00001$ and batch size $128$ for 20 epoches.
 </d-footnote>
+,the resulting classifier is highly non-robust -- it has 0% robust accuracy even with $\eps=0.01$ perturbations.
 </p>
 
-<h2>Discussion</h2>
+<p>
+The input-noise and label noise are both essential for this construction.
+One intuition for what is happening is: in the initial stage of training
+the optimization learns the "correct" decision boundary (indeed, stopping after 1 epoch results in a robust classifier).
+However, optimizing to the point of $\approx 0$ train-error requires a highly non-Lipshitz network
+to fit the label-noise, which hurts robustness.
+
+  <figure class="l-page">
+    <center>
+    <img src="./data.png" style="width:30%"/>
+    <img src="./step10.png" style="width:30%"/>
+    <img src="./step10000.png" style="width:30%"/>
+    </center>
+  <figcaption>
+    <center>
+     Left: The training set (labels color-coded). Middle: The classifier after 10 SGD steps.
+     Right: The classifier at the end of training. Note that it is overfit, and not robust.
+     <p>
+       Figure adapted from <a href="https://arxiv.org/abs/1905.11604">our paper</a>.
+     </p>
+    </center>
+  </figcaption>
+  </figure>
+</p>
+
+<p>
+
+</p>
 
 </d-article>
 
 <d-appendix>
 <h2>Acknowledgments</h2>
 <p>
-  We thanks Ilya Sutskever, Jacob Steinhardt, and Gabriel Goh for
-  helpful discussion and motivation.
+  We thank Ilya Sutskever, Jacob Steinhardt, Gabriel Goh and Christopher Olah for
+  helpful discussion and collaborations.
 </p>
 
 <h2>Experimental Details</h2>
