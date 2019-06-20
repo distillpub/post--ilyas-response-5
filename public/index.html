@@ -468,20 +468,21 @@ By permutation-symmetry of the labels, this implies that:
 </p>
 
 <p>
-<strong>
 2.  If we train on distribution $(X^{Y \to (Y+1)}, Y)$ the classifier learns to predict well
 on distribution $(X, Y-1)$.
-</strong>
 </p>
 
 <p>
 Note that in case (2), we are training with correct labels (just perturbing the inputs imperceptibly),
 but the classifier learns to predict the cyclically-shifted labels.
 Concretely, using the original numbers of
-Table 1 in <d-cite key="bugs"></d-cite>, this reduction implies that an
-adversary can perturb the CIFAR10 train set by $\eps=0.5$ in $L_2$,
-and cause the learnt classifier to output shifted-labels (birds classified as cats, deers as dogs, etc)
-43.7% of the time.
+Table 1 in <d-cite key="bugs"></d-cite>, this reduction implies that
+<strong>
+an adversary can perturb the CIFAR10 train set by $\eps=0.5$ in $L_2$,
+and cause the learnt classifier to output shifted-labels
+43.7% of the time
+(cats classified as birds, dogs as deers, etc).
+</strong>
 </p>
 
 <p>
