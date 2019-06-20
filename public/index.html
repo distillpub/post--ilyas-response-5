@@ -180,7 +180,7 @@ And $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
     <img src="./manifold.svg"/>
   </figure>
   <figcaption>
-    A visualization of the image-manifold for adversarially perturbing a dog to a plane.
+    An illustration of the image-manifold for adversarially perturbing a dog to a plane.
     The gradient of the loss can be thought of as having an on-manifold "feature component"
     and an off-manifold "random component".
     PGD steps along both components, hence causing feature-leakage in adversarial examples.
@@ -405,27 +405,37 @@ with a small amount of random input-noise and label noise.
 
   <p>
 Formally:
+<span style="float:right; width:50%" >
+    <img src="./data.png" style="width:90%"/>
+</span>
 $$Y \sim \{\pm 1\} , \quad X := (\mathbb{1}^{32 \times 32 \times 3} + \eta_\eps) \cdot Y \cdot \eta$$
 where $\eta \in \{\pm 1\} \sim Bernoulli(0.1)$ is the 10% label noise, and $\eta_\eps \sim [-0.1, +0.1]^n$
 is uniform $L_\infty$ input-noise.
+
+<br/>
+<br/>
+A plot of samples from a 2D-version of this distribution is shown to the right.
+
   </p>
 
-<p>
 
-Notice that there exists a trivial robust classifier for this problem which achieves perfect robust classification, with to $\eps = 0.4$ magnitude $L_\infty$ attacks.
+
+  <p>
+Notice that there exists a trivial robust classifier for this problem which achieves perfect robust classification, with up to $\eps = 0.9$ magnitude $L_\infty$ attacks.
 However, if we sample 10000 training images from this distribution, and train
-a ResNet18 to 99.9% train accuracy
+a ResNet18 to 99.9% train accuracy,
 <d-footnote>
 We optimize using Adam with learning-rate $0.00001$ and batch size $128$ for 20 epoches.
 </d-footnote>
-,the resulting classifier is highly non-robust -- it has 0% robust accuracy even with $\eps=0.01$ perturbations.
+the resulting classifier is highly non-robust:
+an $\eps=0.01$ perturbation suffices to flip the class of almost all test examples.
 </p>
 
 <p>
 The input-noise and label noise are both essential for this construction.
 One intuition for what is happening is: in the initial stage of training
 the optimization learns the "correct" decision boundary (indeed, stopping after 1 epoch results in a robust classifier).
-However, optimizing to the point of $\approx 0$ train-error requires a highly non-Lipshitz network
+However, optimizing for close to 0 train-error requires a highly non-Lipshitz network
 to fit the label-noise, which hurts robustness.
 
   <figure class="l-page">
