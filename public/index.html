@@ -174,7 +174,19 @@ And $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
   For example, suppose we are perturbing an image of a dog into a plane (which usually appears against a blue background).
   It is plausible that the gradient direction tends to make the dog image more blue,
   since the "blue" direction is correlated with the plane class.
-  In the construction below, we attempt to eliminate such leakage.
+  In our construction below, we attempt to eliminate such feature leakage.
+
+  <figure>
+    <img src="./manifold.svg"/>
+  </figure>
+  <figcaption>
+    A visualization of adversarially perturbing a dog to a plane.
+    The gradient of the loss can be thought of as having an on-manifold "feature component"
+    and an off-manifold "random component".
+    PGD steps along both components, hence causing feature-leakage in adversarial examples.
+    Our construction below attempts to step only in the off-manifold direction.
+  </figcaption>
+
 </p>
 
 <h3>Our Construction</h3>
@@ -214,10 +226,6 @@ By construction, these adversarial examples will not be adversarial for the ense
 <em>new</em> classifiers trained for the same problem.
 </p>
 
-<p>
-The intuition is... <span style='color:red'>TODO</span>
-Pictures of advex constructed in this way are... <span style='color:red'>TODO</span>
-</p>
 
 <h3>Experiments</h3>
 <p>
