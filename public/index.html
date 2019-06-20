@@ -79,17 +79,6 @@
 This demonstrates, again, that adversarial examples can occur even if the data distribution does not intrinsically have any vulnerable directions.
 </p>
 
-<p>
-Finally, as an addendum, we show that the experiments of <d-cite key="bugs"></d-cite>
-directly imply a <em>data-poisoning attack</em> for end-to-end training of neural networks.
-</p>
-
-<!--    It is possible to construct examples which:
-   (A) transfer between models, and contain features of the target class
-   (at least, learning from these mislabeled examples works nontrivially).
-   But it is also possible to construct examples which
-   (B) do not transfer between models, and do not contain features of the target class (at least, learning fails catastrophically). -->
-
 <h2>Background</h2>
 <p>
 Ilyas et. al <d-cite key="bugs"></d-cite>
@@ -199,7 +188,7 @@ $$x_{t+1} \gets \Pi_\eps\left( x_t
 $$-\left( \nabla_x L(f, x_t, y_{targ}) + \E_i[ \nabla_x L(f_i, x_t, y)] \right)$$
 
 That is, instead of taking gradient steps to minimize $L(f, x, y_{targ})$,
-we minimize the "decorrelated loss"
+we minimize the "disentangled loss"
 <d-footnote>
   We could also consider explicitly using the ensemble to decorrelate,
   by stepping in direction
@@ -371,7 +360,7 @@ $(X, Y+1)$, which is intuitively what we trained on.
 <h2>Adversarial Squares: Adversarial Examples from Robust Features</h2>
 <p>
 To further illustrate that adversarial examples can be "just bugs",
-we show that they arise even when the true data distribution has no "non-robust features" --
+we show that they arise even when the true data distribution has no "non-robust features" &mdash;
 that is, no intrinsically vulnerable directions.
 <d-footnote>
 We are unaware of a satisfactory definition of "non-robust features", but we claim that for any reasonable
@@ -381,7 +370,7 @@ Intrinsic here meaning, a definition which depends only on properties of the dat
 
 <p>
 The problem is to distinguish between CIFAR-sized images that are either all-black or all-white,
-with a small amount of random input-noise and label noise.
+with a small amount of random pixel noise and label noise.
 </p>
   <figure>
     <center>
@@ -395,13 +384,20 @@ with a small amount of random input-noise and label noise.
   </figure>
 
   <p>
-Formally:
 <span style="float:right; width:50%" >
     <img src="./data.png" style="width:90%"/>
 </span>
-$$Y \sim \{\pm 1\} , \quad X := (\mathbb{1}^{32 \times 32 \times 3} + \eta_\eps) \cdot Y \cdot \eta$$
-where $\eta \in \{\pm 1\} \sim Bernoulli(0.1)$ is the 10% label noise, and $\eta_\eps \sim [-0.1, +0.1]^n$
-is uniform $L_\infty$ input-noise.
+Formally, let the distribution be as follows.
+Pick label $Y \in \{\pm 1\}$ uniformly,
+and let $$X := 
+\begin{cases}
+(+\vec{\mathbb{1}} + \eta_\eps) \cdot \eta & \text{if $Y=1$}\\
+(-\vec{\mathbb{1}} + \eta_\eps) \cdot \eta & \text{if $Y=-1$}\\
+\end{cases}$$
+<!-- $$Y \sim \{\pm 1\} , \quad X := (\mathbb{1}^{32 \times 32 \times 3} + \eta_\eps) \cdot Y \cdot \eta$$ -->
+where $\eta_\eps \sim [-0.1, +0.1]^d$ is uniform $L_\infty$ pixel noise,
+and
+$\eta \in \{\pm 1\} \sim Bernoulli(0.1)$ is the 10% label noise.
 
 <br/>
 <br/>
