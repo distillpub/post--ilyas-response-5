@@ -65,7 +65,7 @@
 <p>
   We replicate the Ilyas et. al
   experiment that "Non-robust features suffice for standard classification"
-  (Sec 3.2 of <d-cite key="bugs"></d-cite>),
+  (Section 3.2 of <d-cite key="bugs"></d-cite>),
   and show that it fails for our construction of adversarial examples.
 </p>  
   <p>
@@ -76,7 +76,12 @@
 <p>
   We also give a simple example of a data distribution which has no "non-robust features"
   (under any reasonable definition of feature), but for which standard training yields a highly non-robust classifier.
-This demonstrates, again, that adversarial examples can occur even if the data distribution does not intrinsically have any "vulnerable directions."
+This demonstrates, again, that adversarial examples can occur even if the data distribution does not intrinsically have any vulnerable directions.
+</p>
+
+<p>
+Finally, as an addendum, we show that the experiments of <d-cite key="bugs"></d-cite>
+directly imply a <em>data-poisoning attack</em> for end-to-end training of neural networks.
 </p>
 
 <!--    It is possible to construct examples which:
@@ -142,31 +147,16 @@ $f(x') = y_{targ}$.
 </p>
 
 <p>
-The standard method of constructing adversarial examples is via PGD,
+The standard method of constructing adversarial examples is via Projected Gradient Descent (PGD)
+<d-footnote>
+  PGD is described in the appendix.
+</d-footnote>
 which starts at input $x$, and iteratively takes steps $\{x_t\}$
 to minimize the loss $L(f, x_t, y_{targ})$.
 That is, we take steps in the direction 
 $$-\nabla_x L(f, x_t, y_{targ})$$
 where $L(f, x, y)$ is the loss of $f$ on input $x$, label $y$.
 </p>
-<d-footnote>
-PGD is the following:
-<ul>
-<li>
-Input: A classifier $f$, an input example $(x, y)$, and target class $y_{targ}$.
-</li>
-<li>
-Initialize: $x_0 \gets x$.
-</li>
-<li>
-  Iterative Step: Step in the direction of the gradient towards the target class
-$$x_{t+1} \gets \Pi_\eps[ x_t - \alpha\nabla_x L(f, x_t, y_{targ}) ]$$
-where $\alpha > 0$ is a step-size,
-$L(f, x, y)$ is the loss of classifier $f$ on input $x$, label $y$.
-And $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
-</li>
-</ul>
-</d-footnote>
 
 <p>
   Note that since PGD steps in the gradient direction towards the target class,
@@ -301,8 +291,9 @@ To review, the Ilyas et. al non-robust experiment was:
   </li>
   <li>
     From the CIFAR10 training set $S = \{(X_i, Y_i)\}$,
-    construct an alternate train set $S' = \{(X_i', Y_i + 1)\}$,
-    where $X_i'$ is an adversarial example for $f(X_i)$, towards target class $Y_i+1 (\text{mod }10)$.
+    construct an alternate train set $S' = \{(X_i^{Y_i \to (Y_i + 1)}, Y_i + 1)\}$,
+    where $X_i^{Y_i \to (Y_i +1)}$ denotes an adversarial example for
+    $f$, perturbing $X_i$ from its true class $Y_i$ towards target class $Y_i+1 (\text{mod }10)$.
     Note that $S'$ appears to humans as "mislabeled examples".
   </li>
   <li>
@@ -421,11 +412,11 @@ A plot of samples from a 2D-version of this distribution is shown to the right.
 
 
   <p>
-Notice that there exists a trivial robust classifier for this problem which achieves perfect robust classification, with up to $\eps = 0.9$ magnitude $L_\infty$ attacks.
+Notice that there exists a robust classifier for this problem which achieves perfect robust classification, with up to $\eps = 0.9$ magnitude $L_\infty$ attacks.
 However, if we sample 10000 training images from this distribution, and train
 a ResNet18 to 99.9% train accuracy,
 <d-footnote>
-We optimize using Adam with learning-rate $0.00001$ and batch size $128$ for 20 epoches.
+We optimize using Adam with learning-rate $0.00001$ and batch size $128$ for 20 epochs.
 </d-footnote>
 the resulting classifier is highly non-robust:
 an $\eps=0.01$ perturbation suffices to flip the class of almost all test examples.
@@ -456,17 +447,60 @@ to fit the label-noise, which hurts robustness.
   </figure>
 </p>
 
-<p>
 
+<hr>
+<h2>Addendum: Data Poisoning via Adversarial Examples</h2>
+<p>
+As an addendum, we observe that the "non-robust features"
+experiment of <d-cite key="bugs"></d-cite> (Section 3.2)
+directly implies data-poisoning attacks:
+An adversary that is allowed to imperceptibly change every image in the training set can destroy the accuracy of the learnt classifier &mdash; and can moreover apply an arbitrary permutation
+to the classifier output labels (e.g. swapping cats and dogs).
+</p>
+
+<p>
+To see this, recall that original "non-robust features" experiment shows:<d-footnote>Using our previous notation, and also using vanilla PGD to find adversarial examples.</d-footnote>
+</p>
+
+<p>
+1. If we train on distribution $(X^{Y \to (Y+1)}, Y+ 1)$ the classifier learns to predict well
+on distribution $(X, Y)$.
+</p>
+
+<p>
+By permutation-symmetry of the labels, this implies that:
+</p>
+
+<p>
+<strong>
+2.  If we train on distribution $(X^{Y \to (Y+1)}, Y)$ the classifier learns to predict well
+on distribution $(X, Y-1)$.
+</strong>
+</p>
+
+<p>
+Note that in case (2), we are training with correct labels (just perturbing the inputs imperceptibly),
+but the classifier learns to predict the cyclically-shifted labels.
+Concretely, using the original numbers of
+Table 1 in <d-cite key="bugs"></d-cite>, this reduction implies that an
+adversary can perturb the CIFAR10 train set by $\eps=0.5$ in $L_2$,
+and cause the learnt classifier to output shifted-labels (birds classified as cats, deers as dogs, etc)
+43.7% of the time.
+</p>
+
+<p>
+This should extend to attacks that force arbitrary desired permutations of the labels.
 </p>
 
 </d-article>
 
+
 <d-appendix>
 <h2>Acknowledgments</h2>
 <p>
-  We thank Ilya Sutskever, Jacob Steinhardt, Gabriel Goh and Christopher Olah for
-  helpful discussion and collaborations.
+  We thank Ilya Sutskever, Jacob Steinhardt, and Gabriel Goh
+  for helpful discussion and collaborations.
+  We thank Christopher Olah and Aditya Ramesh for comments on an early draft.
 </p>
 
 <h2>Experimental Details</h2>
@@ -488,6 +522,25 @@ For $L_\infty$ attacks, we used $\eps= 8/ 255$ and $\alpha = 2/255$, and 10 PGD 
 As is standard, we take steps using the sign of the gradient.
 </p>
 
+<strong>Projected Gradient Descent</strong>
+<p>
+PGD is the following:
+<ul>
+<li>
+Input: A classifier $f$, an input example $(x, y)$, and target class $y_{targ}$.
+</li>
+<li>
+Initialize: $x_0 \gets x$.
+</li>
+<li>
+  Iterative Step: Step in the direction of the gradient towards the target class
+$$x_{t+1} \gets \Pi_\eps[ x_t - \alpha\nabla_x L(f, x_t, y_{targ}) ]$$
+where $\alpha > 0$ is a step-size,
+$L(f, x, y)$ is the loss of classifier $f$ on input $x$, label $y$.
+And $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
+</li>
+</ul>
+</p>
 
 </d-appendix>
 
