@@ -377,13 +377,8 @@ that is, intuitively no intrinsically vulnerable directions.
 </p>
 
 <p>
-We are unaware of a satisfactory definition of "non-robust features", but we argue that for any reasonable
-<em>intrinsic</em> definition<d-footnote>A definition which depends only on properties of the data distribution, and not on the family of classifiers, or the finite-sample training set.</d-footnote>, the following classification problem has no non-robust features.
-</p>
-
-<p>
 The problem is to distinguish between CIFAR-sized images that are either all-black or all-white,
-with a small amount of input-noise and label noise.
+with a small amount of random input-noise and label noise.
 Formally:
 $$Y \sim \{\pm 1\} , \quad X := (\mathbb{1}^{32 \times 32 \times 3} + \eta_\eps) \cdot Y \cdot \eta$$
 where $\eta \in \{\pm 1\} \sim B(0.1)$ is the 10% label noise, and $\eta_\eps \sim [-0.1, +0.1]^n$
@@ -391,7 +386,16 @@ is uniform $L_\infty$ input-noise.
 </p>
 
 <p>
+We are unaware of a satisfactory definition of "non-robust features", but we claim that for any reasonable
+<em>intrinsic</em> definition<d-footnote>A definition which depends only on properties of the data distribution, and not on the family of classifiers, or the finite-sample training set.</d-footnote>,
+this problem has no non-robust features.
 
+Notice first that there exists a trivial robust classifier for this problem, that achieves perfect robust classification up to $\eps = 0.4$ magnitude $L_\infty$ attacks.
+However, if we sample 10000 training images from this distribution, and train a ResNet18 to 99% train accuracy,
+the resulting classifier is highly non-robust -- it has 0% robust accuracy even with $\eps=0.01$ perturbation.
+<d-footnote>
+We optimize using Adam with learning-rate $0.00001$ and batch size $128$ for 20 epoches.
+</d-footnote>
 </p>
 
 <h2>Discussion</h2>
