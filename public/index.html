@@ -408,7 +408,7 @@ A plot of samples from a 2D-version of this distribution is shown to the right.
 
 
   <p>
-Notice that there exists a robust classifier for this problem which achieves perfect robust classification, with up to $\eps = 0.9$ magnitude $L_\infty$ attacks.
+Notice that there exists a robust linear classifier for this problem which achieves perfect robust classification, with up to $\eps = 0.9$ magnitude $L_\infty$ attacks.
 However, if we sample 10000 training images from this distribution, and train
 a ResNet18 to 99.9% train accuracy,
 <d-footnote>
@@ -422,7 +422,7 @@ an $\eps=0.01$ perturbation suffices to flip the class of almost all test exampl
 The input-noise and label noise are both essential for this construction.
 One intuition for what is happening is: in the initial stage of training
 the optimization learns the "correct" decision boundary (indeed, stopping after 1 epoch results in a robust classifier).
-However, optimizing for close to 0 train-error requires a highly non-Lipshitz network
+However, optimizing for close to 0 train-error requires a network with high Lipshitz constant
 to fit the label-noise, which hurts robustness.
 
   <figure class="l-page">
