@@ -3,32 +3,57 @@
 <!-- <meta http-equiv="refresh" content="3" > -->
 
 <head>
-<script src="https://distill.pub/template.v2.js"></script>
-<script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML' async></script>
+    <script src="https://distill.pub/template.v2.js"></script>
+    <script src='https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.5/MathJax.js?config=TeX-MML-AM_CHTML'
+        async></script>
 
-<script type="text/x-mathjax-config">
+    <script type="text/x-mathjax-config">
   MathJax.Hub.Config({
     tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]}
   });
   </script>
-  
-\(
-   \def\R{{\mathbb{R}}}
-   \def\cY{{\mathcal{Y}}}
-   \def\cX{{\mathcal{X}}}
-   \def\cD{{\mathcal{D}}}
-   \def\eps{\varepsilon}
-   \newcommand{\E}{\mathop{\mathbb{E}}}
-\)
 
+    \(
+    \def\R{{\mathbb{R}}}
+    \def\cY{{\mathcal{Y}}}
+    \def\cX{{\mathcal{X}}}
+    \def\cD{{\mathcal{D}}}
+    \def\eps{\varepsilon}
+    \newcommand{\E}{\mathop{\mathbb{E}}}
+    \)
+
+    <style>
+        #rebuttal,
+        #response-info {
+            margin: 1em 0;
+            background-color: hsl(128, 50%, 97%);
+            border-left: solid hsl(129, 50%, 25%) 3px;
+            padding: 1em;
+            /* border-radius: 0.25em; */
+        }
+
+        #rebuttal .rebuttal-info {
+            color: hsl(129, 50%, 15%);
+            font-style: italic;
+            /* background-color: hsl(128, 50%, 90%); */
+            /* border: 1px solid hsl(128, 25%, 85%); */
+            /* padding: 0.5em; */
+            margin-bottom: 0.5em;
+            /* border-radius: 0.25em; */
+        }
+        #rebuttal figure {
+            background: white;
+            padding: 1em;
+            border-radius: 1em;
+        }
+    </style>
 </head>
 
 <body>
-<d-front-matter>
-  <script type="text/json">{
+    <d-front-matter>
+        <script type="text/json">{
   "title": "Adversarial Examples are Just Bugs, Too",
   "description": "Refining the source of adversarial examples",
-  "password": "bugs",
   "authors": [
     {
       "author": "Preetum Nakkiran",
@@ -38,526 +63,589 @@
     }
   ]
   }</script>
-</d-front-matter>
+    </d-front-matter>
 
-<d-title>
-  <h1>Adversarial Examples are Just Bugs, Too</h1>
-  <p>Refining the source of adversarial examples</p>
-</d-title>
-<d-article>
+    <d-title>
+        <h1>Adversarial Examples are Just Bugs, Too</h1>
+        <p>Refining the source of adversarial examples</p>
+    </d-title>
+    <d-article>
 
-<!-- <h3>Our Contributions</h3> -->
-<p>
-  We demonstrate that there exist adversarial examples which are just "bugs":
-  aberrations in the classifier
-  that are not
-  intrinsic properties of the data distribution.
-  In particular, we give a new method for constructing adversarial examples which:
-</p>
+        <section id="response-info"><em>
+                This article is part of a collection of responses to Ilyas et al. <d-cite key="ilyas2019adversarial">
+                </d-cite> paper "Adversarial
+                examples are not bugs, they are features". You can learn more about this process in this editorial
+                explanation. The author's rebuttal to this response is reproduced in context at the end of this article.
+                If you want to cite the rebuttal, please cite the linked collection of response rebuttals.</em>
+        </section>
 
-  <ol>
-    <li>
-   Do not transfer between models, and
-    </li>
-    <li>
-      Do not leak "non-robust features" which allow for learning, in the
-  sense of Ilyas-Santurkar-Tsipras-Engstrom-Tran-Madry
-  <d-cite key="bugs"></d-cite>.
-    </li>
-  </ol>
+        <p>
+            We demonstrate that there exist adversarial examples which are just "bugs":
+            aberrations in the classifier that are not intrinsic properties of the data distribution.
+            In particular, we give a new method for constructing adversarial examples which:
+        </p>
 
-<p>
-  We replicate the Ilyas et al.
-  experiment of training on mislabeled adversarially-perturbed images
-  (Section 3.2 of <d-cite key="bugs"></d-cite>),
-  and show that it fails for our construction of adversarial perturbations.
-</p>  
-  <p>
-   The message is, whether adversarial examples are features or bugs depends
-   on how you find them &mdash; standard PGD finds features, but bugs are abundant as well.
-</p>  
+        <ol>
+            <li>
+                Do not transfer between models, and
+            </li>
+            <li>
+                Do not leak "non-robust features" which allow for learning, in the
+                sense of Ilyas-Santurkar-Tsipras-Engstrom-Tran-Madry
+                <d-cite key="ilyas2019adversarial"></d-cite>.
+            </li>
+        </ol>
 
-<p>
-  We also give a toy example of a data distribution which has no "non-robust features"
-  (under any reasonable definition of feature), but for which standard training yields a highly non-robust classifier.
-This demonstrates, again, that adversarial examples can occur even if the data distribution does not intrinsically have any vulnerable directions.
-</p>
+        <p>
+            We replicate the Ilyas et al.
+            experiment of training on mislabeled adversarially-perturbed images
+            (Section 3.2 of <d-cite key="ilyas2019adversarial"></d-cite>),
+            and show that it fails for our construction of adversarial perturbations.
+        </p>
+        <p>
+            The message is, whether adversarial examples are features or bugs depends
+            on how you find them &mdash; standard PGD finds features, but bugs are abundant as well.
+        </p>
+
+        <p>
+            We also give a toy example of a data distribution which has no "non-robust features"
+            (under any reasonable definition of feature), but for which standard training yields a highly non-robust
+            classifier.
+            This demonstrates, again, that adversarial examples can occur even if the data distribution does not
+            intrinsically have any vulnerable directions.
+        </p>
 
 
-<h3>Background</h3>
-<p>
-Many have understood Ilyas et al. <d-cite key="bugs"></d-cite>
-to claim that adversarial examples are not "bugs", but are "features".
-Specifically, Ilyas et al. postulate the following two worlds:
-<d-footnote>As communicated to us by the original authors.</d-footnote>
-</p>
+        <h3>Background</h3>
+        <p>
+            Many have understood Ilyas et al. <d-cite key="ilyas2019adversarial"></d-cite>
+            to claim that adversarial examples are not "bugs", but are "features".
+            Specifically, Ilyas et al. postulate the following two worlds:
+            <d-footnote>As communicated to us by the original authors.</d-footnote>
+        </p>
 
-<ul>
-<li><b>World 1: Adversarial examples exploit directions irrelevant for classification ("bugs").
-  </b>
-In this world, adversarial examples occur because classifiers behave
-poorly off-distribution,
-when they are evaluated on inputs that are not natural images.
-Here, adversarial examples would occur in arbitrary directions,
-having nothing to do with the true data distribution.
-</li>
+        <ul>
+            <li><b>World 1: Adversarial examples exploit directions irrelevant for classification ("bugs").
+                </b>
+                In this world, adversarial examples occur because classifiers behave
+                poorly off-distribution,
+                when they are evaluated on inputs that are not natural images.
+                Here, adversarial examples would occur in arbitrary directions,
+                having nothing to do with the true data distribution.
+            </li>
 
-<li>
-<b>World 2: Adversarial examples exploit useful directions for classification ("features").</b>
-In this world, adversarial examples occur in directions that are still "on-distribution",
-and which contain features of the target class.
-For example, consider the perturbation that
-makes an image of a dog to be classified as a cat.
-In World 2, this perturbation is not purely random, but has something to do with cats.
-Moreover, we expect that this perturbation transfers to other classifiers trained to distinguish cats vs. dogs.
-</li>
-</ul>
+            <li>
+                <b>World 2: Adversarial examples exploit useful directions for classification ("features").</b>
+                In this world, adversarial examples occur in directions that are still "on-distribution",
+                and which contain features of the target class.
+                For example, consider the perturbation that
+                makes an image of a dog to be classified as a cat.
+                In World 2, this perturbation is not purely random, but has something to do with cats.
+                Moreover, we expect that this perturbation transfers to other classifiers trained to distinguish cats
+                vs. dogs.
+            </li>
+        </ul>
 
-<p>
-Our main contribution is demonstrating that these worlds are not mutually exclusive &mdash; and in fact, we are in both.
-Ilyas et al. <d-cite key="bugs"></d-cite>
-show that there exist adversarial examples in World 2, and we show there exist
-examples in World 1.
-</p>
+        <p>
+            Our main contribution is demonstrating that these worlds are not mutually exclusive &mdash; and in fact, we
+            are in both.
+            Ilyas et al. <d-cite key="ilyas2019adversarial"></d-cite>
+            show that there exist adversarial examples in World 2, and we show there exist
+            examples in World 1.
+        </p>
 
-<hr>
-
-<h2>
-  Constructing Non-transferrable Targeted Adversarial Examples
-</h2>
-<p>
-<!-- Consider a classification problem with data distribution $\cD$.
+        <h2>
+            Constructing Non-transferrable Targeted Adversarial Examples
+        </h2>
+        <p>
+            <!-- Consider a classification problem with data distribution $\cD$.
 Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
-We propose a method to construct targeted adversarial examples for a given classifier
-$f$,
-which do not transfer to other classifiers trained for the same problem.
-</p>
+            We propose a method to construct targeted adversarial examples for a given classifier
+            $f$,
+            which do not transfer to other classifiers trained for the same problem.
+        </p>
 
-<p>
-Recall that for a classifier $f$, an input example $(x, y)$, and target class $y_{targ}$,
-a <em>targeted adversarial example</em> is an $x'$ such that $||x - x'||\leq \eps$ and
-$f(x') = y_{targ}$.
-</p>
+        <p>
+            Recall that for a classifier $f$, an input example $(x, y)$, and target class $y_{targ}$,
+            a <em>targeted adversarial example</em> is an $x'$ such that $||x - x'||\leq \eps$ and
+            $f(x') = y_{targ}$.
+        </p>
 
-<p>
-The standard method of constructing adversarial examples is via Projected Gradient Descent (PGD)
-<d-footnote>
-  PGD is described in the appendix.
-</d-footnote>
-which starts at input $x$, and iteratively takes steps $\{x_t\}$
-to minimize the loss $L(f, x_t, y_{targ})$.
-That is, we take steps in the direction 
-$$-\nabla_x L(f, x_t, y_{targ})$$
-where $L(f, x, y)$ is the loss of $f$ on input $x$, label $y$.
-</p>
+        <p>
+            The standard method of constructing adversarial examples is via Projected Gradient Descent (PGD)
+            <d-footnote>
+                PGD is described in the appendix.
+            </d-footnote>
+            which starts at input $x$, and iteratively takes steps $\{x_t\}$
+            to minimize the loss $L(f, x_t, y_{targ})$.
+            That is, we take steps in the direction
+            $$-\nabla_x L(f, x_t, y_{targ})$$
+            where $L(f, x, y)$ is the loss of $f$ on input $x$, label $y$.
+        </p>
 
-<p>
-  Note that since PGD steps in the gradient direction towards the target class,
-  we may expect these adversarial examples have <em>feature leakage</em> from the target class.
-  For example, suppose we are perturbing an image of a dog into a plane (which usually appears against a blue background).
-  It is plausible that the gradient direction tends to make the dog image more blue,
-  since the "blue" direction is correlated with the plane class.
-  In our construction below, we attempt to eliminate such feature leakage.
+        <p>
+            Note that since PGD steps in the gradient direction towards the target class,
+            we may expect these adversarial examples have <em>feature leakage</em> from the target class.
+            For example, suppose we are perturbing an image of a dog into a plane (which usually appears against a blue
+            background).
+            It is plausible that the gradient direction tends to make the dog image more blue,
+            since the "blue" direction is correlated with the plane class.
+            In our construction below, we attempt to eliminate such feature leakage.
 
-  <figure>
-    <img src="./manifold.svg"/>
-  </figure>
-  <figcaption>
-    An illustration of the image-manifold for adversarially perturbing a dog to a plane.
-    The gradient of the loss can be thought of as having an on-manifold "feature component"
-    and an off-manifold "random component".
-    PGD steps along both components, hence causing feature-leakage in adversarial examples.
-    Our construction below attempts to step only in the off-manifold direction.
-  </figcaption>
+            <figure>
+                <img src="./manifold.svg" />
+            </figure>
+            <figcaption>
+                An illustration of the image-manifold for adversarially perturbing a dog to a plane.
+                The gradient of the loss can be thought of as having an on-manifold "feature component"
+                and an off-manifold "random component".
+                PGD steps along both components, hence causing feature-leakage in adversarial examples.
+                Our construction below attempts to step only in the off-manifold direction.
+            </figcaption>
 
-</p>
+        </p>
 
-<h3>Our Construction</h3>
-<p>
-Let $\{f_i : \R^n \to \cY\}_i$ be an ensemble of classifiers
-for the same classification problem as $f$.
-For example, we can let $\{f_i\}$ be a collection of ResNet18s trained from
-different random initializations.
-</p>
+        <h3>Our Construction</h3>
+        <p>
+            Let $\{f_i : \R^n \to \cY\}_i$ be an ensemble of classifiers
+            for the same classification problem as $f$.
+            For example, we can let $\{f_i\}$ be a collection of ResNet18s trained from
+            different random initializations.
+        </p>
 
-<p>
-  For input example $(x, y)$ and target class $y_{targ}$, 
-  we perform iterative updates to find adversarial attacks &mdash; as in PGD.
-  However,  instead of stepping directly in the gradient direction, we
-  step in the direction
-<d-footnote>
-Formally, we replace the iterative step with
-$$x_{t+1} \gets \Pi_\eps\left( x_t
-- \alpha( \nabla_x L(f, x_t, y_{targ}) + \E_i[ \nabla_x L(f_i, x_t, y)]) \right)$$
-where $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
-</d-footnote>
-$$-\left( \nabla_x L(f, x_t, y_{targ}) + \E_i[ \nabla_x L(f_i, x_t, y)] \right)$$
+        <p>
+            For input example $(x, y)$ and target class $y_{targ}$,
+            we perform iterative updates to find adversarial attacks &mdash; as in PGD.
+            However, instead of stepping directly in the gradient direction, we
+            step in the direction
+            <d-footnote>
+                Formally, we replace the iterative step with
+                $$x_{t+1} \gets \Pi_\eps\left( x_t
+                - \alpha( \nabla_x L(f, x_t, y_{targ}) + \E_i[ \nabla_x L(f_i, x_t, y)]) \right)$$
+                where $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
+            </d-footnote>
+            $$-\left( \nabla_x L(f, x_t, y_{targ}) + \E_i[ \nabla_x L(f_i, x_t, y)] \right)$$
 
-That is, instead of taking gradient steps to minimize $L(f, x, y_{targ})$,
-we minimize the "disentangled loss"
-<d-footnote>
-  We could also consider explicitly using the ensemble to decorrelate,
-  by stepping in direction
-  $\nabla_x L(f, x, y_{targ}) - \E_i[ \nabla_x L(f_i, x, y_{targ})]$.
-  This works well for small $\epsilon$,
-  but the given loss has better optimization properties for larger $\epsilon$.
-</d-footnote>
-$$L(f, x, y_{targ}) + \E_i[L(f_i, x, y)]$$
-This loss encourages finding an $x_t$ which is adversarial for $f$,
-but not for the ensemble $\{f_i\}$.
-</p>
+            That is, instead of taking gradient steps to minimize $L(f, x, y_{targ})$,
+            we minimize the "disentangled loss"
+            <d-footnote>
+                We could also consider explicitly using the ensemble to decorrelate,
+                by stepping in direction
+                $\nabla_x L(f, x, y_{targ}) - \E_i[ \nabla_x L(f_i, x, y_{targ})]$.
+                This works well for small $\epsilon$,
+                but the given loss has better optimization properties for larger $\epsilon$.
+            </d-footnote>
+            $$L(f, x, y_{targ}) + \E_i[L(f_i, x, y)]$$
+            This loss encourages finding an $x_t$ which is adversarial for $f$,
+            but not for the ensemble $\{f_i\}$.
+        </p>
 
-<p>
-These adversarial examples will not be adversarial for the ensemble $\{f_i\}$. But perhaps surprisingly, these examples are also not adversarial for
-<em>new</em> classifiers trained for the same problem.
-</p>
-
-
-<h3>Experiments</h3>
-<p>
-We train a ResNet18 on CIFAR10 as our target classifier $f$.
-For our ensemble, we train 10 ResNet18s on CIFAR10, from fresh random initializations.
-We then test the probability that
-a targeted attack for $f$
-transfers to a new (freshly-trained) ResNet18, with the same targeted class.
-Our construction yields adversarial examples which do not transfer well to new models.
-</p>
-
-<p>
-For $L_{\infty}$ attacks:
-</p>
-
-<table>
-<tr>
-  <td></td>
-  <th>Attack Success</th>
-  <th>Transfer Success</th>
-</tr>
-<tr>
-  <th>PGD</th>
-  <td>99.6%</td>
-  <td>52.1%</td>
-</tr>
-<tr>
-  <th>Ours</th>
-  <td>98.6%</td>
-  <td style="color:red">0.8%</td>
-</tr>
-</table>
-
-<p>
-For $L_2$ attacks:
-</p>
-
-<table>
-<tr>
-  <td></td>
-  <th>Attack Success</th>
-  <th>Transfer Success</th>
-</tr>
-<tr>
-  <th>PGD</th>
-  <td>99.9%</td>
-  <td>82.5%</td>
-</tr>
-<tr>
-  <th>Ours</th>
-  <td>99.3%</td>
-  <td style="color:red">1.7%</td>
-</tr>
-</table>
+        <p>
+            These adversarial examples will not be adversarial for the ensemble $\{f_i\}$. But perhaps surprisingly,
+            these examples are also not adversarial for
+            <em>new</em> classifiers trained for the same problem.
+        </p>
 
 
-<hr>
-<h2>Adversarial Examples With No Features</h2>
-<p>
-Using the above, we can construct adversarial examples
-which <em>do not suffice</em> for learning.
-Here, we replicate the Ilyas et al. experiment 
-that "Non-robust features suffice for standard classification"
-(Section 3.2 of <d-cite key="bugs"></d-cite>),
-but show that it fails for our construction of adversarial examples.
-</p>
+        <h3>Experiments</h3>
+        <p>
+            We train a ResNet18 on CIFAR10 as our target classifier $f$.
+            For our ensemble, we train 10 ResNet18s on CIFAR10, from fresh random initializations.
+            We then test the probability that
+            a targeted attack for $f$
+            transfers to a new (freshly-trained) ResNet18, with the same targeted class.
+            Our construction yields adversarial examples which do not transfer well to new models.
+        </p>
 
-<p>
-To review, the Ilyas et al. non-robust experiment was:
-<ol>
-  <li> 
-    Train a standard classifier $f$ for CIFAR.
-  </li>
-  <li>
-    From the CIFAR10 training set $S = \{(X_i, Y_i)\}$,
-    construct an alternate train set $S' = \{(X_i^{Y_i \to (Y_i + 1)}, Y_i + 1)\}$,
-    where $X_i^{Y_i \to (Y_i +1)}$ denotes an adversarial example for
-    $f$, perturbing $X_i$ from its true class $Y_i$ towards target class $Y_i+1 (\text{mod }10)$.
-    Note that $S'$ appears to humans as "mislabeled examples".
-  </li>
-  <li>
-    Train a new classifier $f'$ on train set $S'$.
-    Observe that this classifier has non-trivial accuracy on the original CIFAR distribution.
-  </li>
-</ol>
-</p>
+        <p>
+            For $L_{\infty}$ attacks:
+        </p>
 
-<p>
-Ilyas et al. use Step (3) to argue that
-adversarial examples have a meaningful "feature" component.
+        <table>
+            <tr>
+                <td></td>
+                <th>Attack Success</th>
+                <th>Transfer Success</th>
+            </tr>
+            <tr>
+                <th>PGD</th>
+                <td>99.6%</td>
+                <td>52.1%</td>
+            </tr>
+            <tr>
+                <th>Ours</th>
+                <td>98.6%</td>
+                <td style="color:red">0.8%</td>
+            </tr>
+        </table>
 
-However, for adversarial examples constructed using our method, Step (3) fails.
-In fact, $f'$ has good accuracy with respect to the "label-shifted" distribution
-$(X, Y+1)$, which is intuitively what we trained on.
-</p>
+        <p>
+            For $L_2$ attacks:
+        </p>
 
-<p>For $L_{\infty}$ attacks:</p>
+        <table>
+            <tr>
+                <td></td>
+                <th>Attack Success</th>
+                <th>Transfer Success</th>
+            </tr>
+            <tr>
+                <th>PGD</th>
+                <td>99.9%</td>
+                <td>82.5%</td>
+            </tr>
+            <tr>
+                <th>Ours</th>
+                <td>99.3%</td>
+                <td style="color:red">1.7%</td>
+            </tr>
+        </table>
 
-<figure>
-<table>
-<tr>
-  <td></td>
-  <th>Test Acc on CIFAR: $(X, Y)$</th>
-  <th>Test Acc on Shifted-CIFAR: $(X, Y+1)$</th>
-</tr>
-<tr>
-  <th>PGD</th>
-  <td>23.7%</td>
-  <td>40.4%</td>
-</tr>
-<tr>
-  <th>Ours</th>
-  <td style="color:red">2.5%</td>
-  <td>75.9%</td>
-</tr>
-</table>
+        <h2>Adversarial Examples With No Features</h2>
+        <p>
+            Using the above, we can construct adversarial examples
+            which <em>do not suffice</em> for learning.
+            Here, we replicate the Ilyas et al. experiment
+            that "Non-robust features suffice for standard classification"
+            (Section 3.2 of <d-cite key="ilyas2019adversarial"></d-cite>),
+            but show that it fails for our construction of adversarial examples.
+        </p>
 
-<figcaption>
-  <center>
-  Table: Test Accuracies of $f'$ 
-  </center>
-</figcaption>
-</figure>
-<p>For $L_2$ attacks:</p>
-<figure>
-<table>
-<tr>
-  <td></td>
-  <th>Test Acc on CIFAR: $(X, Y)$</th>
-  <th>Test Acc on Shifted-CIFAR: $(X, Y+1)$</th>
-</tr>
-<tr>
-  <th>PGD</th>
-  <td>33.2%</td>
-  <td>27.3%</td>
-</tr>
-<tr>
-  <th>Ours</th>
-  <td style="color:red">2.8%</td>
-  <td>70.8%</td>
-</tr>
-</table>
+        <p>
+            To review, the Ilyas et al. non-robust experiment was:
+            <ol>
+                <li>
+                    Train a standard classifier $f$ for CIFAR.
+                </li>
+                <li>
+                    From the CIFAR10 training set $S = \{(X_i, Y_i)\}$,
+                    construct an alternate train set $S' = \{(X_i^{Y_i \to (Y_i + 1)}, Y_i + 1)\}$,
+                    where $X_i^{Y_i \to (Y_i +1)}$ denotes an adversarial example for
+                    $f$, perturbing $X_i$ from its true class $Y_i$ towards target class $Y_i+1 (\text{mod }10)$.
+                    Note that $S'$ appears to humans as "mislabeled examples".
+                </li>
+                <li>
+                    Train a new classifier $f'$ on train set $S'$.
+                    Observe that this classifier has non-trivial accuracy on the original CIFAR distribution.
+                </li>
+            </ol>
+        </p>
 
-<figcaption>
-  <center>
-  Table: Test Accuracies of $f'$ 
-  </center>
-</figcaption>
-</figure>
+        <p>
+            Ilyas et al. use Step (3) to argue that
+            adversarial examples have a meaningful "feature" component.
 
+            However, for adversarial examples constructed using our method, Step (3) fails.
+            In fact, $f'$ has good accuracy with respect to the "label-shifted" distribution
+            $(X, Y+1)$, which is intuitively what we trained on.
+        </p>
 
-<hr>
-<h2>Adversarial Squares: Adversarial Examples from Robust Features</h2>
-<p>
-To further illustrate that adversarial examples can be "just bugs",
-we show that they can arise even when the true data distribution has no "non-robust features" &mdash;
-that is, no intrinsically vulnerable directions.
-<d-footnote>
-We are unaware of a satisfactory definition of "non-robust feature", but we claim that for any reasonable
-<em>intrinsic</em> definition, this problem has no non-robust features.
-Intrinsic here meaning, a definition which depends only on geometric properties of the data distribution, and not on the family of classifiers, or the finite-sample training set.
+        <p>For $L_{\infty}$ attacks:</p>
 
-<br>
-We do not use the Ilyas et al. definition of "non-robust features," because we believe it is vacuous.
-In particular, by the Ilyas et al. definition, <strong>every</strong> distribution
-has "non-robust features" &mdash; so the definition does not discern structural properties of the distribution.
-Moreover, for every "robust feature" $f$, there exists a corresponding "non-robust feature" $f'$, such that $f$ and $f'$ agree on the data distribution &mdash; so the definition depends strongly on the family of classifiers being considered.
-</d-footnote>
-In the following toy problem, adversarial vulnerability arises as a consequence of finite-sample overfitting, and
-label noise.
-</p>
+        <figure>
+            <table>
+                <tr>
+                    <td></td>
+                    <th>Test Acc on CIFAR: $(X, Y)$</th>
+                    <th>Test Acc on Shifted-CIFAR: $(X, Y+1)$</th>
+                </tr>
+                <tr>
+                    <th>PGD</th>
+                    <td>23.7%</td>
+                    <td>40.4%</td>
+                </tr>
+                <tr>
+                    <th>Ours</th>
+                    <td style="color:red">2.5%</td>
+                    <td>75.9%</td>
+                </tr>
+            </table>
 
-<p>
-The problem is to distinguish between CIFAR-sized images that are either all-black or all-white,
-with a small amount of random pixel noise and label noise.
-</p>
-  <figure>
-    <center>
-    <img src="./twosquares.png" style="width:50%"/>
-    </center>
-  <figcaption>
-    <center>
-    A sample of images from the distribution.
-    </center>
-  </figcaption>
-  </figure>
+            <figcaption>
+                <center>
+                    Table: Test Accuracies of $f'$
+                </center>
+            </figcaption>
+        </figure>
+        <p>For $L_2$ attacks:</p>
+        <figure>
+            <table>
+                <tr>
+                    <td></td>
+                    <th>Test Acc on CIFAR: $(X, Y)$</th>
+                    <th>Test Acc on Shifted-CIFAR: $(X, Y+1)$</th>
+                </tr>
+                <tr>
+                    <th>PGD</th>
+                    <td>33.2%</td>
+                    <td>27.3%</td>
+                </tr>
+                <tr>
+                    <th>Ours</th>
+                    <td style="color:red">2.8%</td>
+                    <td>70.8%</td>
+                </tr>
+            </table>
 
-  <p>
-<span style="float:right; width:50%" >
-    <img src="./data.png" style="width:90%"/>
-</span>
-Formally, let the distribution be as follows.
-Pick label $Y \in \{\pm 1\}$ uniformly,
-and let $$X := 
-\begin{cases}
-(+\vec{\mathbb{1}} + \vec\eta_\eps) \cdot \eta & \text{if $Y=1$}\\
-(-\vec{\mathbb{1}} + \vec\eta_\eps) \cdot \eta & \text{if $Y=-1$}\\
-\end{cases}$$
-<!-- $$Y \sim \{\pm 1\} , \quad X := (\mathbb{1}^{32 \times 32 \times 3} + \eta_\eps) \cdot Y \cdot \eta$$ -->
-where $\vec\eta_\eps \sim [-0.1, +0.1]^d$ is uniform $L_\infty$ pixel noise,
-and
-$\eta \in \{\pm 1\} \sim Bernoulli(0.1)$ is the 10% label noise.
+            <figcaption>
+                <center>
+                    Table: Test Accuracies of $f'$
+                </center>
+            </figcaption>
+        </figure>
 
-<br/>
-<br/>
-A plot of samples from a 2D-version of this distribution is shown to the right.
+        <h2>Adversarial Squares: Adversarial Examples from Robust Features</h2>
+        <p>
+            To further illustrate that adversarial examples can be "just bugs",
+            we show that they can arise even when the true data distribution has no "non-robust features" &mdash;
+            that is, no intrinsically vulnerable directions.
+            <d-footnote>
+                We are unaware of a satisfactory definition of "non-robust feature", but we claim that for any
+                reasonable
+                <em>intrinsic</em> definition, this problem has no non-robust features.
+                Intrinsic here meaning, a definition which depends only on geometric properties of the data
+                distribution, and not on the family of classifiers, or the finite-sample training set.
 
-  </p>
+                <br>
+                We do not use the Ilyas et al. definition of "non-robust features," because we believe it is vacuous.
+                In particular, by the Ilyas et al. definition, <strong>every</strong> distribution
+                has "non-robust features" &mdash; so the definition does not discern structural properties of the
+                distribution.
+                Moreover, for every "robust feature" $f$, there exists a corresponding "non-robust feature" $f'$, such
+                that $f$ and $f'$ agree on the data distribution &mdash; so the definition depends strongly on the
+                family of classifiers being considered.
+            </d-footnote>
+            In the following toy problem, adversarial vulnerability arises as a consequence of finite-sample
+            overfitting, and
+            label noise.
+        </p>
 
+        <p>
+            The problem is to distinguish between CIFAR-sized images that are either all-black or all-white,
+            with a small amount of random pixel noise and label noise.
+        </p>
+        <figure>
+            <center>
+                <img src="./twosquares.png" style="width:50%" />
+            </center>
+            <figcaption>
+                <center>
+                    A sample of images from the distribution.
+                </center>
+            </figcaption>
+        </figure>
 
+        <p>
+            <span style="float:right; width:50%">
+                <img src="./data.png" style="width:90%" />
+            </span>
+            Formally, let the distribution be as follows.
+            Pick label $Y \in \{\pm 1\}$ uniformly,
+            and let $$X :=
+            \begin{cases}
+            (+\vec{\mathbb{1}} + \vec\eta_\eps) \cdot \eta & \text{if $Y=1$}\\
+            (-\vec{\mathbb{1}} + \vec\eta_\eps) \cdot \eta & \text{if $Y=-1$}\\
+            \end{cases}$$
+            <!-- $$Y \sim \{\pm 1\} , \quad X := (\mathbb{1}^{32 \times 32 \times 3} + \eta_\eps) \cdot Y \cdot \eta$$ -->
+            where $\vec\eta_\eps \sim [-0.1, +0.1]^d$ is uniform $L_\infty$ pixel noise,
+            and
+            $\eta \in \{\pm 1\} \sim Bernoulli(0.1)$ is the 10% label noise.
 
-  <p>
-Notice that there exists a robust linear classifier for this problem which achieves perfect robust classification, with up to $\eps = 0.9$ magnitude $L_\infty$ attacks.
-However, if we sample 10000 training images from this distribution, and train
-a ResNet18 to 99.9% train accuracy,
-<d-footnote>
-We optimize using Adam with learning-rate $0.00001$ and batch size $128$ for 20 epochs.
-</d-footnote>
-the resulting classifier is highly non-robust:
-an $\eps=0.01$ perturbation suffices to flip the class of almost all test examples.
-</p>
+            <br />
+            <br />
+            A plot of samples from a 2D-version of this distribution is shown to the right.
 
-<p>
-The input-noise and label noise are both essential for this construction.
-One intuition for what is happening is: in the initial stage of training
-the optimization learns the "correct" decision boundary (indeed, stopping after 1 epoch results in a robust classifier).
-However, optimizing for close to 0 train-error requires a network with high Lipshitz constant
-to fit the label-noise, which hurts robustness.
-
-  <figure class="l-page">
-    <center>
-    <img src="./data.png" style="width:30%"/>
-    <img src="./step10.png" style="width:30%"/>
-    <img src="./step10000.png" style="width:30%"/>
-    </center>
-  <figcaption>
-    <center>
-     Left: The training set (labels color-coded). Middle: The classifier after 10 SGD steps.
-     Right: The classifier at the end of training. Note that it is overfit, and not robust.
-     <p>
-       Figure adapted from <d-cite key="sgd"></d-cite>.
-     </p>
-    </center>
-  </figcaption>
-  </figure>
-</p>
-
-<hr>
-<h2>Addendum: Data Poisoning via Adversarial Examples</h2>
-<p>
-As an addendum, we observe that the "non-robust features"
-experiment of <d-cite key="bugs"></d-cite> (Section 3.2)
-directly implies data-poisoning attacks:
-An adversary that is allowed to imperceptibly change every image in the training set can destroy the accuracy of the learnt classifier &mdash; and can moreover apply an arbitrary permutation
-to the classifier output labels (e.g. swapping cats and dogs).
-</p>
-
-<p>
-To see this, recall that the original "non-robust features" experiment shows:<d-footnote>Using our previous notation, and also using vanilla PGD to find adversarial examples.</d-footnote>
-</p>
-
-<p>
-1. If we train on distribution $(X^{Y \to (Y+1)}, Y+ 1)$ the classifier learns to predict well
-on distribution $(X, Y)$.
-</p>
-
-<p>
-By permutation-symmetry of the labels, this implies that:
-</p>
-
-<p>
-2.  If we train on distribution $(X^{Y \to (Y+1)}, Y)$ the classifier learns to predict well
-on distribution $(X, Y-1)$.
-</p>
-
-<p>
-Note that in case (2), we are training with correct labels, just perturbing the inputs imperceptibly,
-but the classifier learns to predict the cyclically-shifted labels.
-Concretely, using the original numbers of
-Table 1 in <d-cite key="bugs"></d-cite>, this reduction implies that
-<strong>
-an adversary can perturb the CIFAR10 train set by $\eps=0.5$ in $L_2$,
-and cause the learnt classifier to output shifted-labels
-43.7% of the time
-(cats classified as birds, dogs as deers, etc).
-</strong>
-</p>
-
-<p>
-This should extend to attacks that force arbitrary desired permutations of the labels.
-</p>
-
-</d-article>
+        </p>
 
 
-<d-appendix>
-<h2>Acknowledgments</h2>
-<p>
-  We thank Ilya Sutskever and Christopher Olah for motivating this work.
-  We thank Jacob Steinhardt and Gabriel Goh for helpful technical discussion and collaborations.
-  We thank Christopher Olah, Aditya Ramesh, Mark Chen, Jacob Hilton, and Gal Kaplun for comments on an early draft.
-  We thank the authors of <d-cite key="bugs"></d-cite> for providing details of their experimental setup.
-</p>
 
-<h2>Experimental Details</h2>
-<p>
-We use cross-entropy loss,
-and images normalized to lie within $[0, 1]^{32 \times 32 \times 3}$.
-</p>
+        <p>
+            Notice that there exists a robust linear classifier for this problem which achieves perfect robust
+            classification, with up to $\eps = 0.9$ magnitude $L_\infty$ attacks.
+            However, if we sample 10000 training images from this distribution, and train
+            a ResNet18 to 99.9% train accuracy,
+            <d-footnote>
+                We optimize using Adam with learning-rate $0.00001$ and batch size $128$ for 20 epochs.
+            </d-footnote>
+            the resulting classifier is highly non-robust:
+            an $\eps=0.01$ perturbation suffices to flip the class of almost all test examples.
+        </p>
 
-<p>
-For $L_2$ attacks, we used $\eps = 2.5$,
-step-size $\alpha = 0.5$, and 10 PGD steps.
-As is standard, we use a variant of PGD
-where we normalize the size of each gradient step to be of $L_2$-norm
-$\alpha$.
-</p>
+        <p>
+            The input-noise and label noise are both essential for this construction.
+            One intuition for what is happening is: in the initial stage of training
+            the optimization learns the "correct" decision boundary (indeed, stopping after 1 epoch results in a robust
+            classifier).
+            However, optimizing for close to 0 train-error requires a network with high Lipshitz constant
+            to fit the label-noise, which hurts robustness.
 
-<p>
-For $L_\infty$ attacks, we used $\eps= 8/ 255$ and $\alpha = 2/255$, and 10 PGD steps.
-As is standard, we take steps using the sign of the gradient.
-</p>
+            <figure class="l-page">
+                <center>
+                    <img src="./data.png" style="width:30%" />
+                    <img src="./step10.png" style="width:30%" />
+                    <img src="./step10000.png" style="width:30%" />
+                </center>
+                <figcaption>
+                    <center>
+                        Left: The training set (labels color-coded). Middle: The classifier after 10 SGD steps.
+                        Right: The classifier at the end of training. Note that it is overfit, and not robust.
+                        <p>
+                            Figure adapted from <d-cite key="sgd"></d-cite>.
+                        </p>
+                    </center>
+                </figcaption>
+            </figure>
+        </p>
 
-<strong>Projected Gradient Descent</strong>
-<p>
-PGD is the following:
-<ul>
-<li>
-Input: A classifier $f$, an input example $(x, y)$, and target class $y_{targ}$.
-</li>
-<li>
-Initialize: $x_0 \gets x$.
-</li>
-<li>
-  Iterative Step: Step in the direction of the gradient towards the target class
-$$x_{t+1} \gets \Pi_\eps[ x_t - \alpha\nabla_x L(f, x_t, y_{targ}) ]$$
-where $\alpha > 0$ is a step-size,
-$L(f, x, y)$ is the loss of classifier $f$ on input $x$, label $y$.
-And $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
-</li>
-</ul>
-</p>
+        <h2>Addendum: Data Poisoning via Adversarial Examples</h2>
+        <p>
+            As an addendum, we observe that the "non-robust features"
+            experiment of <d-cite key="ilyas2019adversarial"></d-cite> (Section 3.2)
+            directly implies data-poisoning attacks:
+            An adversary that is allowed to imperceptibly change every image in the training set can destroy the
+            accuracy of the learnt classifier &mdash; and can moreover apply an arbitrary permutation
+            to the classifier output labels (e.g. swapping cats and dogs).
+        </p>
 
-</d-appendix>
+        <p>
+            To see this, recall that the original "non-robust features" experiment shows:<d-footnote>Using our previous
+                notation, and also using vanilla PGD to find adversarial examples.</d-footnote>
+        </p>
 
-<d-bibliography src="refs.bib"> </d-bibliography>
+        <p>
+            1. If we train on distribution $(X^{Y \to (Y+1)}, Y+ 1)$ the classifier learns to predict well
+            on distribution $(X, Y)$.
+        </p>
+
+        <p>
+            By permutation-symmetry of the labels, this implies that:
+        </p>
+
+        <p>
+            2. If we train on distribution $(X^{Y \to (Y+1)}, Y)$ the classifier learns to predict well
+            on distribution $(X, Y-1)$.
+        </p>
+
+        <p>
+            Note that in case (2), we are training with correct labels, just perturbing the inputs imperceptibly,
+            but the classifier learns to predict the cyclically-shifted labels.
+            Concretely, using the original numbers of
+            Table 1 in <d-cite key="ilyas2019adversarial"></d-cite>, this reduction implies that
+            <strong>
+                an adversary can perturb the CIFAR10 train set by $\eps=0.5$ in $L_2$,
+                and cause the learnt classifier to output shifted-labels
+                43.7% of the time
+                (cats classified as birds, dogs as deers, etc).
+            </strong>
+        </p>
+
+        <p>
+            This should extend to attacks that force arbitrary desired permutations of the labels.
+        </p>
+
+        <section id="rebuttal">
+            <div class="rebuttal-info">The original paper's authors' rebuttal is shown here in context. If you want
+                    to cite this rebuttal, please cite the linked collection of response rebuttals.</div>
+            <p><b>Response Summary</b>: We note that as discussed in
+                more detail in <a href="#takeaway1">Takeaway #1</a>, the mere existence of adversarial
+                examples
+                that are “features” is sufficient to corroborate our main thesis. This comment
+                illustrates, however, that we can indeed craft adversarial examples that are
+                based on “bugs” in realistic settings. Interestingly, such examples don’t
+                transfer, which provides further support for the link between transferability
+                and non-robust features.
+
+            </p>
+            <p><b>Response</b>: As mentioned <a href="#nonclaim1">above</a>,
+                we did not intend to claim
+                that adversarial examples arise <i>exclusively</i> from (useful) features but rather
+                that non-robust features are (at least partially) responsible. In fact, prior
+                work already shows how in theory adversarial examples can arise from
+                insufficient samples <d-cite key="schmidt2018adversarially"></d-cite> or finite-sample overfitting
+                <d-cite key="tanay2016boundary"></d-cite>, and the experiments
+                presented here (particularly, the adversarial squares) constitute a neat
+                real-world demonstration of these facts. </p>
+
+            <p> Our main thesis that "adversarial examples will not just go away as we fix
+                bugs in our models" is not contradicted by the existence of adversarial examples
+                stemming from "bugs." As long as adversarial examples can stem from non-robust
+                features (which the commenter seems to agree with), fixing these bugs will not
+                solve the problem of adversarial examples. </p>
+
+            <p> That said, the experiments cleverly zoom in on some more fine-grained
+                nuances in our understanding of adversarial examples. One particular thing that
+                stood out to us is that by creating a set of adversarial examples that are
+                <i>explicitly</i> non-transferable, one also prevents new classifiers from learning
+                features from that dataset. This finding thus makes the connection between
+                transferability of adversarial examples and their containing generalizing
+                features even stronger! Indeed, we can add the constructed dataset into our
+                “\(\widehat{\mathcal{D}}_{det}\) learnability vs transferability” plot
+                (Figure 3 in the paper)&mdash;the point
+                corresponding to this dataset fits neatly onto the trendline! </p>
+
+            <figure class="subgrid">
+                <img class="l-body" src="transfer.png" />
+                <figcaption style="grid-column: kicker">
+                    <span>Relationship between models reliance on non-robust features and their susceptibility to
+                        transfer attacks</span>
+                </figcaption>
+            </figure>
+        </section>
+
+    </d-article>
+
+
+    <d-appendix>
+        <h3>Acknowledgments</h3>
+        <p>
+            We thank Ilya Sutskever and Christopher Olah for motivating this work.
+            We thank Jacob Steinhardt and Gabriel Goh for helpful technical discussion and collaborations.
+            We thank Christopher Olah, Aditya Ramesh, Mark Chen, Jacob Hilton, and Gal Kaplun for comments on an early
+            draft.
+            We thank the authors of <d-cite key="ilyas2019adversarial"></d-cite> for providing details of their experimental setup.
+        </p>
+
+        <h3>Experimental Details</h3>
+        <p>
+            We use cross-entropy loss,
+            and images normalized to lie within $[0, 1]^{32 \times 32 \times 3}$.
+        </p>
+
+        <p>
+            For $L_2$ attacks, we used $\eps = 2.5$,
+            step-size $\alpha = 0.5$, and 10 PGD steps.
+            As is standard, we use a variant of PGD
+            where we normalize the size of each gradient step to be of $L_2$-norm
+            $\alpha$.
+        </p>
+
+        <p>
+            For $L_\infty$ attacks, we used $\eps= 8/ 255$ and $\alpha = 2/255$, and 10 PGD steps.
+            As is standard, we take steps using the sign of the gradient.
+        </p>
+
+        <strong>Projected Gradient Descent</strong>
+        <p>
+            PGD is the following:
+            <ul>
+                <li>
+                    Input: A classifier $f$, an input example $(x, y)$, and target class $y_{targ}$.
+                </li>
+                <li>
+                    Initialize: $x_0 \gets x$.
+                </li>
+                <li>
+                    Iterative Step: Step in the direction of the gradient towards the target class
+                    $$x_{t+1} \gets \Pi_\eps[ x_t - \alpha\nabla_x L(f, x_t, y_{targ}) ]$$
+                    where $\alpha > 0$ is a step-size,
+                    $L(f, x, y)$ is the loss of classifier $f$ on input $x$, label $y$.
+                    And $\Pi_\eps$ is the projection onto the $\eps$-ball around $x$.
+                </li>
+            </ul>
+        </p>
+
+    </d-appendix>
+
+    <d-bibliography src="refs.bib"></d-bibliography>
 
 </body>
-
