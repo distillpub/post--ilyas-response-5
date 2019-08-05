@@ -24,27 +24,29 @@
 
     <style>
         #rebuttal,
-        #response-info {
+        .response-info {
             margin: 1em 0;
-            background-color: hsl(128, 50%, 97%);
-            border-left: solid hsl(129, 50%, 25%) 3px;
+            background-color: hsl(228, 50%, 97%);
+            border-left: solid hsl(229, 50%, 25%) 3px;
             padding: 1em;
-            /* border-radius: 0.25em; */
         }
 
-        #rebuttal .rebuttal-info {
+        #rebuttal,
+        .rebuttal-info {
             color: hsl(129, 50%, 15%);
-            font-style: italic;
-            /* background-color: hsl(128, 50%, 90%); */
-            /* border: 1px solid hsl(128, 25%, 85%); */
-            /* padding: 0.5em; */
+            background-color: hsl(128, 50%, 97%);
+            border-left: solid hsl(128, 50%, 25%) 3px;
             margin-bottom: 0.5em;
-            /* border-radius: 0.25em; */
         }
+
         #rebuttal figure {
             background: white;
             padding: 1em;
             border-radius: 1em;
+        }
+
+        #rebuttal p:last-of-type {
+            margin-bottom: 0;
         }
     </style>
 </head>
@@ -71,12 +73,10 @@
     </d-title>
     <d-article>
 
-        <section id="response-info"><em>
-                This article is part of a collection of responses to Ilyas et al. <d-cite key="ilyas2019adversarial">
-                </d-cite> paper "Adversarial
-                examples are not bugs, they are features". You can learn more about this process in this editorial
-                explanation. The author's rebuttal to this response is reproduced in context at the end of this article.
-                If you want to cite the rebuttal, please cite the linked collection of response rebuttals.</em>
+        <section class="response-info">
+            This article is part of a discussion of Ilyas et al. <d-cite key="ilyas2019adversarial"></d-cite> paper
+            <em>"Adversarial examples are not bugs, they are features"</em>. You can learn more in the main
+            <a href="/2019/advex-bugs-responses/">discussion article</a>.
         </section>
 
         <p>
@@ -543,11 +543,16 @@ Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
             This should extend to attacks that force arbitrary desired permutations of the labels.
         </p>
 
+        <div class="response-info">
+            Ilyas, et. al.'s rebuttal is shown here in context. To cite this rebuttal, please cite their
+            <a href="/2019/advex-bugs-responses/rebuttal/#citation">collection of response rebuttals</a>.
+        </div>
+
         <section id="rebuttal">
-            <div class="rebuttal-info">The original paper's authors' rebuttal is shown here in context. If you want
-                    to cite this rebuttal, please cite the linked collection of response rebuttals.</div>
+
             <p><b>Response Summary</b>: We note that as discussed in
-                more detail in <a href="#takeaway1">Takeaway #1</a>, the mere existence of adversarial
+                more detail in <a href="/2019/advex-bugs-responses/rebuttal/#takeaway1">Takeaway #1</a>, the mere
+                existence of adversarial
                 examples
                 that are “features” is sufficient to corroborate our main thesis. This comment
                 illustrates, however, that we can indeed craft adversarial examples that are
@@ -556,9 +561,10 @@ Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
                 and non-robust features.
 
             </p>
-            <p><b>Response</b>: As mentioned <a href="#nonclaim1">above</a>,
+            <p><b>Response</b>: As <a href="/2019/advex-bugs-responses/rebuttal/#nonclaim1">mentioned [in our
+                    rebuttal]</a>,
                 we did not intend to claim
-                that adversarial examples arise <i>exclusively</i> from (useful) features but rather
+                that adversarial examples arise <em>exclusively</em> from (useful) features but rather
                 that non-robust features are (at least partially) responsible. In fact, prior
                 work already shows how in theory adversarial examples can arise from
                 insufficient samples <d-cite key="schmidt2018adversarially"></d-cite> or finite-sample overfitting
@@ -575,21 +581,25 @@ Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
             <p> That said, the experiments cleverly zoom in on some more fine-grained
                 nuances in our understanding of adversarial examples. One particular thing that
                 stood out to us is that by creating a set of adversarial examples that are
-                <i>explicitly</i> non-transferable, one also prevents new classifiers from learning
+                <em>explicitly</em> non-transferable, one also prevents new classifiers from learning
                 features from that dataset. This finding thus makes the connection between
                 transferability of adversarial examples and their containing generalizing
                 features even stronger! Indeed, we can add the constructed dataset into our
-                “\(\widehat{\mathcal{D}}_{det}\) learnability vs transferability” plot
-                (Figure 3 in the paper)&mdash;the point
-                corresponding to this dataset fits neatly onto the trendline! </p>
+                "$\widehat{\mathcal{D}}_{det}$ learnability vs transferability" plot
+                (Figure 3 in the paper)—the point corresponding to this dataset fits neatly onto the trendline! </p>
 
-            <figure class="subgrid">
+            <figure>
                 <img class="l-body" src="transfer.png" />
-                <figcaption style="grid-column: kicker">
-                    <span>Relationship between models reliance on non-robust features and their susceptibility to
-                        transfer attacks</span>
+                <figcaption>
+                    Relationship between models reliance on non-robust features and their susceptibility to transfer
+                    attacks
                 </figcaption>
             </figure>
+        </section>
+
+        <section class="response-info">
+            You can find more responses in the main <a href="/2019/advex-bugs-responses/">discussion
+                article</a>.
         </section>
 
     </d-article>
@@ -602,7 +612,8 @@ Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
             We thank Jacob Steinhardt and Gabriel Goh for helpful technical discussion and collaborations.
             We thank Christopher Olah, Aditya Ramesh, Mark Chen, Jacob Hilton, and Gal Kaplun for comments on an early
             draft.
-            We thank the authors of <d-cite key="ilyas2019adversarial"></d-cite> for providing details of their experimental setup.
+            We thank the authors of <d-cite key="ilyas2019adversarial"></d-cite> for providing details of their
+            experimental setup.
         </p>
 
         <h3>Experimental Details</h3>
