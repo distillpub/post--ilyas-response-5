@@ -624,8 +624,8 @@ Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
         <section class="comment-info" id="rebuttal">
 
             <p><b>Response Summary</b>: We note that as discussed in
-                more detail in <a href="/2019/advex-bugs-discussion/rebuttal/#takeaway1">Takeaway #1</a>, the mere
-                existence of adversarial
+                more detail in <a href="/2019/advex-bugs-responses/original-authors/#takeaway1">Takeaway #1</a>, the
+                mere existence of adversarial
                 examples
                 that are “features” is sufficient to corroborate our main thesis. This comment
                 illustrates, however, that we can indeed craft adversarial examples that are
@@ -634,12 +634,12 @@ Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
                 and non-robust features.
 
             </p>
-            <p><b>Response</b>: As <a href="/2019/advex-bugs-discussion/rebuttal/#nonclaim1">mentioned [in our
-                    rebuttal]</a>,
+            <p><b>Response</b>: As mentioned <a href="/2019/advex-bugs-responses/original-authors/#nonclaim1">above</a>,
                 we did not intend to claim
                 that adversarial examples arise <em>exclusively</em> from (useful) features but rather
-                that non-robust features are (at least partially) responsible. In fact, prior
-                work already shows how in theory adversarial examples can arise from
+                that useful non-robust features exist and are thus (at least
+                partially) responsible for adversarial vulnerability. In fact,
+                prior work already shows how in theory adversarial examples can arise from
                 insufficient samples <d-cite key="schmidt2018adversarially"></d-cite> or finite-sample overfitting
                 <d-cite key="tanay2016boundary"></d-cite>, and the experiments
                 presented here (particularly, the adversarial squares) constitute a neat
@@ -651,6 +651,19 @@ Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
                 features (which the commenter seems to agree with), fixing these bugs will not
                 solve the problem of adversarial examples. </p>
 
+            <p>Moreover, with regards to feature "leakage" from PGD, recall that in
+                or D_det dataset, the non-robust features are associated with the
+                correct label whereas the robust features are associated with the wrong
+                one. We wanted to emphasize that, as
+                <a href="https://arxiv.org/abs/1905.02175">
+                    shown in Appendix D.6
+                </a>,
+                models trained on our $D_det$ dataset actually generalize <em>better</em> to
+                the non-robust feature-label association that to the robust
+                feature-label association. In contrast, if PGD introduced a small
+                "leakage" of non-robust features, then we would expect the trained model
+                would still predominantly use the robust feature-label association. </p>
+
             <p> That said, the experiments cleverly zoom in on some more fine-grained
                 nuances in our understanding of adversarial examples. One particular thing that
                 stood out to us is that by creating a set of adversarial examples that are
@@ -658,8 +671,9 @@ Let $f: \R^n \to \cY$ be a standard classifier for this problem. -->
                 features from that dataset. This finding thus makes the connection between
                 transferability of adversarial examples and their containing generalizing
                 features even stronger! Indeed, we can add the constructed dataset into our
-                "$\widehat{\mathcal{D}}_{det}$ learnability vs transferability" plot
-                (Figure 3 in the paper)—the point corresponding to this dataset fits neatly onto the trendline! </p>
+                “$\widehat{\mathcal{D}}_{det}$ learnability vs transferability” plot
+                (Figure 3 in the paper)&mdash;the point
+                corresponding to this dataset fits neatly onto the trendline! </p>
 
             <figure>
                 <img class="l-body" src="transfer.png" />
